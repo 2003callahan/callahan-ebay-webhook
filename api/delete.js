@@ -1,14 +1,12 @@
-const VERIFICATION_TOKEN = "callahan_verify_token_93485723984723048723098472938473";
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const incomingToken = req.headers['x-ebay-verification-token'];
-
-    if (incomingToken !== VERIFICATION_TOKEN) {
-      return res.status(401).json({ error: "Invalid verification token" });
+    // Check if this is a challenge from eBay
+    if (req.body && req.body.challengeCode) {
+      return res.status(200).json({ challengeResponse: req.body.challengeCode });
     }
 
-    console.log("✅ Verified eBay Account Deletion Notification:", req.body);
+    // You can also validate the real token here later if needed
+    console.log("✅ Received eBay Deletion Notification:", req.body);
     return res.status(200).json({ status: "received" });
   } else {
     return res.status(405).json({ error: "Method not allowed" });
